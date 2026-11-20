@@ -1,5 +1,7 @@
 using System;
+using System.Management;
 using BSCustomClevoController.Utility;
+using BSCustomClevoController;
 
 namespace BSCustomClevoController.Controls
 {
@@ -11,6 +13,7 @@ namespace BSCustomClevoController.Controls
         public FanInfo Fan_GPU1 { get; set; }
         public FanInfo Fan_GPU2 { get; set; }
         public bool HasThirdFan { get; set; }
+        public HardwareTelemetry Telemetry { get; set; }
     }
 
     public struct FanInfo
@@ -52,6 +55,9 @@ namespace BSCustomClevoController.Controls
         private const string AppRegistryKey = @"HKEY_CURRENT_USER\Software\BSCustomClevoController";
         private const string FanModeValueName = "FanMode";
 
+        private static HardwareMonitor _hardwareMonitor;
+        private static readonly object _hardwareMonitorLock = new object();
+
         public static event Action<Mode> FanProfileChanged;
 
         public static FanInfo GetDefaultFanInfo()
@@ -64,6 +70,61 @@ namespace BSCustomClevoController.Controls
         private static int _fanSpeedZeroStreak;
         private static long _lastFanToggleTicks;
         private static readonly object _fanToggleLock = new object();
+
+        private static HardwareTelemetry ReadHardwareTelemetry()
+        {
+            lock (_hardwareMonitorLock)
+            {
+                try
+                {
+                    if (_hardwareMonitor == null)
+                        _hardwareMonitor = new HardwareMonitor();
+
+                    return _hardwareMonitor.GetTelemetry();
+                }
+                catch (Exception ex)
+                {
+                    AppLogger.Log("Fan.ReadHardwareTelemetry", ex);
+                    return default(HardwareTelemetry);
+                }
+            }
+        }
+
+        public static HardwareTelemetry GetHardwareTelemetry()
+        {
+            return ReadHardwareTelemetry();
+        }
+
+        public static string GetHardwareSensorReport()
+        {
+            lock (_hardwareMonitorLock)
+            {
+                try
+                {
+                    if (_hardwareMonitor == null)
+                        _hardwareMonitor = new HardwareMonitor();
+
+                    return _hardwareMonitor.GetSensorReport();
+                }
+                catch (Exception ex)
+                {
+                    AppLogger.Log("Fan.GetHardwareSensorReport", ex);
+                    return ex.ToString();
+                }
+            }
+        }
+
+        public static void ShutdownHardwareMonitor()
+        {
+            lock (_hardwareMonitorLock)
+            {
+                if (_hardwareMonitor == null)
+                    return;
+
+                _hardwareMonitor.Dispose();
+                _hardwareMonitor = null;
+            }
+        }
 
         public enum Mode
         {
@@ -174,6 +235,7 @@ namespace BSCustomClevoController.Controls
             status.Fan_CPU = cpu;
             status.Fan_GPU1 = gpu1;
             status.Fan_GPU2 = gpu2;
+            status.Telemetry = ReadHardwareTelemetry();
             return status;
         }
 

@@ -8,11 +8,11 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using BSCustomClevoController.Controls;
 
-
 namespace BSCustomClevoController.Views
 {
     public partial class Page_FanSettings : Page
     {
+
         private readonly SolidColorBrush _colorBlue = new SolidColorBrush(Color.FromRgb(56, 189, 248));
         private readonly SolidColorBrush _colorYellow = new SolidColorBrush(Color.FromRgb(255, 178, 36));
         private readonly SolidColorBrush _colorRed = new SolidColorBrush(Color.FromRgb(255, 77, 77));
@@ -355,23 +355,64 @@ namespace BSCustomClevoController.Views
             }
         }
 
+        private static string FormatTelemetry(double? value, string format, string unit)
+        {
+            return value.HasValue
+                ? value.Value.ToString(format, LocalizationManager.CurrentCulture) + " " + unit
+                : "-- " + unit;
+        }
+
+        private void UpdateHardwareTelemetryDisplay(HardwareTelemetry telemetry)
+        {
+            CpuTelemetryText.Text =
+                FormatTelemetry(telemetry.CpuPower, "F1", "W") + "  ·  " +
+                FormatTelemetry(telemetry.CpuFrequency.HasValue ? telemetry.CpuFrequency.Value / 1000.0 : (double?)null, "F2", "GHz") + "  ·  " +
+                FormatTelemetry(telemetry.CpuLoad, "F0", "%");
+
+            GpuTelemetryText.Text =
+                FormatTelemetry(telemetry.GpuPower, "F1", "W") + "  ·  " +
+                FormatTelemetry(telemetry.GpuFrequency.HasValue ? telemetry.GpuFrequency.Value / 1000.0 : (double?)null, "F2", "GHz") + "  ·  " +
+                FormatTelemetry(telemetry.GpuLoad, "F0", "%");
+        }
+
         private void rpmTimer_Tick(object sender, EventArgs e)
         {
             FanInfo cpu = default;
             FanInfo gpu1 = default;
             FanInfo gpu2 = default;
+
             Fan.Read_FanSpeed(ref cpu, ref gpu1, ref gpu2);
 
             if (Fan.HasThirdFan)
             {
-                UpdateFanTelemetryDisplay(RpmGpu2Text, gpu2.rpm, gpu2.percent, gpu2.remote, _gpuPrimaryBrush);
+                UpdateFanTelemetryDisplay(
+                    RpmGpu2Text,
+                    gpu2.rpm,
+                    gpu2.percent,
+                    gpu2.remote,
+                    _gpuPrimaryBrush);
             }
 
-            UpdateFanTelemetryDisplay(RpmCpuText, cpu.rpm, cpu.percent, cpu.remote, _cpuPrimaryBrush);
-            UpdateFanTelemetryDisplay(RpmGpuText, gpu1.rpm, gpu1.percent, gpu1.remote, _gpuPrimaryBrush);
+            UpdateFanTelemetryDisplay(
+                RpmCpuText,
+                cpu.rpm,
+                cpu.percent,
+                cpu.remote,
+                _cpuPrimaryBrush);
+
+            UpdateFanTelemetryDisplay(
+                RpmGpuText,
+                gpu1.rpm,
+                gpu1.percent,
+                gpu1.remote,
+                _gpuPrimaryBrush);
+
+            HardwareTelemetry telemetry = Fan.GetHardwareTelemetry();
+            UpdateHardwareTelemetryDisplay(telemetry);
 
             _lastCpuTemp = cpu.remote;
             _lastGpuTemp = gpu1.remote;
+
             RenderAllCurves();
         }
 
