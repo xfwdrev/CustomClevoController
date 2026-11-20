@@ -8,7 +8,7 @@ Class=System ;Sample
 ClassGuid= {4d36e97d-e325-11ce-bfc1-08002be10318} ;{78A1C341-4539-11d3-B88D-00C04FAD5171}
 Provider=%ManufacturerName%
 CatalogFile=AcpiBridge.cat
-DriverVer = 05/21/2024,1.0.0.8
+DriverVer = 09/01/2021,1.0.0.7
 PnpLockdown=1
 
 [DestinationDirs]

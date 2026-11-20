@@ -8,7 +8,7 @@ Class=System ; TODO: specify appropriate Class
 ClassGuid={4d36e97d-e325-11ce-bfc1-08002be10318} ; TODO: specify appropriate ClassGuid
 Provider= %ManufacturerName%
 CatalogFile=AcpiBridge1.cat
-DriverVer=08/09/2024, 6.0.91.1 ; TODO: set DriverVer in stampinf property pages
+DriverVer=09/17/2021, 1.0.40.0; TODO: set DriverVer in stampinf property pages
 PnpLockdown=1
 
 [DestinationDirs]
@@ -21,39 +21,27 @@ DefaultDestDir = 13
 AcpiBridge1.sys  = 1
 DCHUService.exe = 1
 WakePanelUp_Hook.exe = 1
+LaunchFnKey.exe = 1
+CRPS.exe = 1
 ;---------For DCHU
 InsydeDCHU.dll = 1
+;--------For AMD
+AMDRyzenMasterDriver.inf = 1
+AMDRyzenMasterDriver.sys = 1
+Device.dll = 1
+Platform.dll = 1
+DriverUtility.bat = 1
+GetProductdll.dll = 1
+InstallRyzenMasterSDK.exe = 1
 
 ;*****************************************
 ; Install Section
 ;*****************************************
 
 [Manufacturer]
-;%CLEVOCO% = Components,NTx86.10.0...16299
-;%CLEVOCO% = Components,NTamd64.10.0...16299
-CLV=CLV,NTamd64.10.0...16299
+CLV=CLV,NTamd64
 
-;[Components.NTx86.10.0...16299]
-;%AcpiBridge1Desc% = Component_Install.NTx86,ACPI\CLV0002
-
-;[Components.NTamd64.10.0...16299]
-;%AcpiBridge1Desc% = Component_Install.NTamd64,ACPI\CLV0002
-
-;[Component_Install.NTx86]
-;CopyFiles=Drivers_Dir
-
-;[Component_Install.NTamd64]
-;CopyFiles=Drivers_Dir
-
-;[Component_Install.NTx86.Services]
-;AddService = , 0x00000002,
-;AddService = CCDCHUService,%SPSVCINST_ASSOCSERVICE%, AcpiBridge1_Service_Inst
-
-;[Component_Install.NTamd64.Services]
-;AddService = , 0x00000002,
-;AddService = CCDCHUService,%SPSVCINST_ASSOCSERVICE%, AcpiBridge1_Service_Inst
-
-[CLV.NTamd64.10.0...16299]
+[CLV.NTamd64]
 "Acpi Bridge1"=AcpiBridge1_Device, ACPI\CLV0002 ; TODO: edit hw-id
 
 [AcpiBridge1_Device.NT]
@@ -63,8 +51,18 @@ CopyFiles=Drivers_Dir
 AcpiBridge1.sys
 DCHUService.exe
 WakePanelUp_Hook.exe
+LaunchFnKey.exe
+CRPS.exe
 ;---------For DCHU
 InsydeDCHU.dll
+;--------For AMD
+AMDRyzenMasterDriver.inf
+AMDRyzenMasterDriver.sys
+Device.dll
+Platform.dll
+DriverUtility.bat
+GetProductdll.dll
+InstallRyzenMasterSDK.exe
 
 ;-------------- Service installation
 [AcpiBridge1_Device.NT.Services]
@@ -93,6 +91,3 @@ ManufacturerName="CLEVO" ;TODO: Replace with your manufacturer name
 DiskName = "AcpiBridge1 Installation Disk"
 AcpiBridge1.DeviceDesc = "AcpiBridge1 Device"
 AcpiBridge1.SVCDESC = "Control Center Hotkey Service"
-CLEVOCO="CLEVO CO."
-AcpiBridge1Desc = "AcpiBridge1 Device"
-

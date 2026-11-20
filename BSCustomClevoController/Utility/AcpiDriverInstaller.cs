@@ -1,13 +1,15 @@
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Management;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
-using Microsoft.Win32;
 
 namespace BSCustomClevoController.Utility
 {
@@ -30,17 +32,17 @@ namespace BSCustomClevoController.Utility
         }
 
         private const string PrimaryInfName = "AcpiBridge.inf";
-        private const long AcpiBridgeSysLength = 64032L;
-        private const string AcpiBridgeSysSha256 = "64729BB218EF3ADA9CA4B94565F1285E36782B11F5E4B2B3D467E4053A31E6C0";
+        private const long AcpiBridgeSysLength = 83736L;
+        private const string AcpiBridgeSysSha256 = "BE879AF2EF1BEAA3AD041C30ABD103C5E9E872D23EA8442B57682BB0D06EA153";
 
         private static readonly ExpectedDriverFile[] ExpectedDriverFiles = new ExpectedDriverFile[]
         {
-            new ExpectedDriverFile("AcpiBridge.inf", 2531L, "21E665B3121702BFA6D6C6939B7AFA05C6EB7DB6670B847D36E2470C7B997EE8", null),
-            new ExpectedDriverFile("AcpiBridge.sys", AcpiBridgeSysLength, AcpiBridgeSysSha256, "7EC40A94C507A5D67BA991A456661A86387FDAAF"),
-            new ExpectedDriverFile("acpibridge.cat", 11356L, "02D8535755AFA4A8ECDE2F21A8BEF492C1AF8C606B977BB3272E36CA699D4A96", "62C16976BFBBF57B8F8B588A043B4FB0BC294A6D"),
-            new ExpectedDriverFile("AcpiBridge1.Inf", 2720L, "980A9758C30F2B0D88AF8A65FEF460023D6A7AF2E8D1D917E8F4E3BF6B680956", null),
-            new ExpectedDriverFile("AcpiBridge1.sys", 45944L, "13B7F2D7F77B99D007395D4E6B61D6A54B92284CEE84D6A8BAC9453FB4B032CA", "B42FD7CA222DE2478D8EBB0DE3F3824B79D1BC2E"),
-            new ExpectedDriverFile("acpibridge1.cat", 12696L, "FD9092026C59993B73FCE2DACA3C7B48286D197C004718858B977D7D198D8D06", "BDC9B8C37C6B71791A584EC19F2069D98042DC0A")
+            new ExpectedDriverFile("AcpiBridge.inf", 2531L, "BF668F7EB0031E4AABF6B364830E2AACD2397EE4B2997AA3EB82D0013671437F", null),
+            new ExpectedDriverFile("AcpiBridge.sys", AcpiBridgeSysLength, AcpiBridgeSysSha256, "426510225A68B9260814230B37E289BFE0566F28"),
+            new ExpectedDriverFile("acpibridge.cat", 11177L, "7C1203904101E6A3FDAAB3305318B3F3141A81AA53BED50EA3FBE9CFB483F873", "426510225A68B9260814230B37E289BFE0566F28"),
+            new ExpectedDriverFile("AcpiBridge1.Inf", 2350L, "0A4F87B4AFB76057DFA2F84BE2C06111E8181383AFEE9105B1AEF272EB5D6396", null),
+            new ExpectedDriverFile("AcpiBridge1.sys", 71792L, "33EDDC7F90E5394B7671BFCD7B5E8615BDD11930373BC7880330ADABE88E0496", "CA5296E9D87044679D0B405104B8DB2C8D56EB03"),
+            new ExpectedDriverFile("acpibridge1.cat", 16649L, "DE0D8842FD497EEDD24FB6F5A20FA352F566CED551008B693ABFE76194F799BB", "CA5296E9D87044679D0B405104B8DB2C8D56EB03")
         };
 
         private static readonly object InstalledSysCacheLock = new object();
